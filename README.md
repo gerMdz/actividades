@@ -1,0 +1,1 @@
+####### Thanks https://davegebler.com/post/php/build-symfony-doctrine-audit-log-entity-changes
