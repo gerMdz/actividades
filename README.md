@@ -1,1 +1,2 @@
 ####### Thanks https://davegebler.com/post/php/build-symfony-doctrine-audit-log-entity-changes
+####### A tener en cuenta https://latteandcode.medium.com/symfony-c%C3%B3mo-detectar-cambios-en-una-colecci%C3%B3n-de-una-entidad-f7e1bf5f93ff
