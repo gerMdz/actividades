@@ -7,17 +7,17 @@
 
     <table class="table">
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>EntityType</th>
-                <th>EntityId</th>
-                <th>CreatedAt</th>
-                <th>Extent</th>
-                <th>RequestRoute</th>
-                <th>EventData</th>
-                <th>IpAddress</th>
-                <th>actions</th>
-            </tr>
+        <tr>
+            <th>Id</th>
+            <th>EntityType</th>
+            <th>EntityId</th>
+            <th>CreatedAt</th>
+            <th>Extent</th>
+            <th>RequestRoute</th>
+            <th>EventData</th>
+            <th>IpAddress</th>
+            <th>actions</th>
+        </tr>
         </thead>
         <tbody>
         {% for activity in activities %}
@@ -28,7 +28,16 @@
                 <td>{{ activity.createdAt ? activity.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ activity.extent }}</td>
                 <td>{{ activity.requestRoute }}</td>
-                <td>{{ activity.eventData ? activity.eventData|json_encode : '' }}</td>
+                <td>
+                    {#                    {{ activity.eventData ? activity.eventData|json_encode : '' }} #}
+                    <button type="button" class="btn btn-primary btn-event" id="data-{{ activity.id }}"
+                            data-event="{{ activity.eventData ? activity.eventData|json_encode : '' }}"
+                            {#                            data-toggle="modal" data-target="#staticDataEvent" #}
+                    >
+                        <i class="fa fa-eye"></i>
+                    </button>
+
+                </td>
                 <td>{{ activity.ipAddress }}</td>
                 <td>
                     <a href="{{ path('app_activity_show', {'id': activity.id}) }}">show</a>
@@ -44,4 +53,141 @@
     </table>
 
     <a href="{{ path('app_activity_new') }}">Create new</a>
+
+    <div class="col-12" id="staticDataEvent" data-backdrop="static" data-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block javascripts %}
+    {#    {{ parent() }} #}
+    <script src="{{ asset('js/jquery-1.12.3.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-modal.js') }}"></script>
+
+
+    <script>
+        alert('inicio')
+        // $('.btn-event').on('show.bs.modal', function (event) {
+        $(document).ready(function () {
+            $('.btn-event').click(function () {
+
+                console.log('ingreso');
+                // var button = $(event.relatedTarget) // Button that triggered the modal
+                var data_event = $(this).data('event') // Extract info from data-* attributes
+                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+                var modal = $('#staticDataEvent')
+                console.log(modal);
+                console.log($(this))
+                console.log(data_event)
+                let datos_uno = JSON.stringify(data_event);
+
+                console.log('102')
+
+
+                getObject(data_event);
+                let myHtml = objectToHtml(data_event);
+                console.log(myHtml);
+
+
+
+
+                // const keyes = Object.keys(data_event);
+                // console.log('update');
+                // keyes.forEach((key) => {
+                //     console.log(`Clave: ${key}`);
+                //     const nestedObj = data_event[key];
+                //     const nestedKeys = Object.keys(nestedObj);
+                //     nestedKeys.forEach((nestedKey) => {
+                //         const value = nestedObj[nestedKey];
+                //         console.log(`Clave: ${nestedKey}, Valor: ${value}`);
+                //     });
+                // });
+
+
+// Expected output:
+// "a: 1"
+// "b: 2"
+// "c: 3"
+                // modal.find('.modal-title').text('New message to ' + recipient)
+
+                // modal.find('.modal-body').val()
+                // modal.find('.modal-body').empty()
+                 $('.modal-body').empty()
+                 $('.modal-body').append(myHtml)
+                //  const objEntries = Object.entries(data_event);
+                // modal.find('.modal-body').text()
+                // modal.modal('show')
+
+            })
+
+            function getObject(object) {
+                if (typeof object === "object" && object !== null   ) {
+                    const keys = Object.keys(object);
+                    console.log('insert');
+                    for (const key of keys) {
+                        const value = object[key];
+                        if (typeof value === "object") {
+                            console.log(`Clave: ${key}`);
+                            getObject(value)
+                        } else {
+                            console.log(`Clave: ${key}, Valor: ${value}`);
+                        }
+                    }
+                }else{
+                    console.log(`Valor: ${object}`);
+                }
+            }
+
+
+
+
+// Ahora puedes usar la variable `myHtml` para insertar el HTML generado en tu página web
+//             console.log(myHtml);
+
+            function objectToHtml(obj) {
+                let html = '';
+
+                for (let key in obj) {
+                    let value = obj[key];
+                    html += '<div>';
+                    html += '<h2>' + key + '</h2>';
+
+                    if (typeof value === 'object' && value !== null) {
+                        // Si el valor es un objeto, llamamos recursivamente a la función para convertirlo en HTML
+                        html += objectToHtml(value);
+                    } else {
+                        // Si el valor no es un objeto, lo mostramos como un párrafo
+                        html += '<p>' + value + '</p>';
+                    }
+
+                    html += '</div>';
+                }
+
+                return html;
+            }
+
+
+        })
+
+
+    </script>
 {% endblock %}
