@@ -75,3 +75,4 @@ vendor/
 /.web-server-pid
 /public/css/
 /public/js/
+/public/css/images/
